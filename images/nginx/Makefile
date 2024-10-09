@@ -13,7 +13,8 @@
 # limitations under the License.
 
 BUILDER ?= ingress-nginx
-PLATFORMS ?= linux/amd64,linux/arm,linux/arm64
+PLATFORMS?=linux/amd64,linux/arm64
+PROGRESS=plain
 REGISTRY ?= us-central1-docker.pkg.dev/k8s-staging-images/ingress-nginx
 IMAGE ?= $(REGISTRY)/nginx
 TAG ?= $(shell cat TAG)
