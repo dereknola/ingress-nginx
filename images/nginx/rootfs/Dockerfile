@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# With BCI as base image, with the SLES 15 SP6 tag, which has a newer version of glibc
-FROM registry.suse.com/bci/bci-base:15.6 as builder
+FROM registry.suse.com/bci/bci-base:15.6.47.20.4 as builder
  
 RUN zypper addrepo -p 105 http://download.opensuse.org/distribution/leap/15.6/repo/oss/ download.opensuse.org-oss && \
     zypper --gpg-auto-import-keys refresh
@@ -23,7 +22,7 @@ COPY --chmod=0755 build.sh /
 RUN /build.sh
 
 # Use a multi-stage build
-FROM registry.suse.com/bci/bci-base:15.6
+FROM registry.suse.com/bci/bci-base:15.6.47.20.4
 
 ENV PATH=$PATH:/usr/local/luajit/bin:/usr/local/nginx/sbin:/usr/local/nginx/bin
 
