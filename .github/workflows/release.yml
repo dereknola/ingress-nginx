@@ -59,7 +59,7 @@ jobs:
       contents: read
       id-token: write # needed for the Vault authentication
     if: github.event_name == 'release' && github.event.action == 'created'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       REGISTRY: ${{ github.repository_owner }}
     steps:
@@ -126,7 +126,7 @@ jobs:
       contents: read
       id-token: write # needed for the Vault authentication
     if: github.event_name == 'release' && github.event.action == 'created'
-    runs-on: ubuntu-latest-arm
+    runs-on: ubuntu-24.04-arm
     env:
       REGISTRY: ${{ github.repository_owner }}
     steps:
