@@ -249,7 +249,7 @@ jobs:
         run: docker buildx imagetools inspect ${{ env.BASE_IMAGE_REPO }}:${{ steps.meta.outputs.version }}
 
   release-controller-image:
-    needs: release-base-image
+    needs: merge-manifests
     permissions:
       contents: read
       id-token: write # needed for the Vault authentication
