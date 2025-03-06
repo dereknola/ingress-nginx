@@ -104,7 +104,7 @@ jobs:
       with:
         platforms: linux/amd64
         outputs: type=image,"name=${{ env.BASE_IMAGE_REPO }}",push-by-digest=true,name-canonical=true,push=true
-        file: ./images/nginx/Dockerfile
+        file: ./images/nginx/rootfs/Dockerfile
 
     - name: Export digest
       run: |
@@ -171,7 +171,7 @@ jobs:
       with:
         platforms: linux/arm64
         outputs: type=image,"name=${{ env.BASE_IMAGE_REPO }}",push-by-digest=true,name-canonical=true,push=true
-        file: ./images/nginx/Dockerfile
+        file: ./images/nginx/rootfs/Dockerfile
 
     - name: Export digest
       run: |
