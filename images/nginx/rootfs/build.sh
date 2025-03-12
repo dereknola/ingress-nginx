@@ -148,7 +148,6 @@ zypper install -y \
   gd-devel \
   libedit-devel \
   mercurial \
-  abseil-cpp-devel \
   findutils \
   ca-certificates \
   patch \
@@ -176,8 +175,21 @@ zypper install -y \
   pkgconfig \
   c-ares-devel \
   re2-devel \
+
+# The tumbleweed repo contains newer versions of dependencies needed for opentelemetry-cpp:
+# - abseil-cpp-devel-20250127 (BCI only has the 2024 version)
+# - Newer protobuf-devel and grpc-devel packages
+# These packages are required by opentelemetry-cpp which depends on the latest versions.
+# This is a temporary fix until BCI updates these packages in their repository.
+# Do this after the other packages are installed to avoid dependency conflicts.
+zypper addrepo -p 99 http://download.opensuse.org/tumbleweed/repo/oss/ download.opensuse.org-tumbleweed-oss && \
+    zypper --gpg-auto-import-keys refresh
+zypper install -y --allow-vendor-change \
+  abseil-cpp-devel \
   grpc-devel \
   protobuf-devel
+
+
 # apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing opentelemetry-cpp-dev
 
 # There is some bug with some platforms and git, so force HTTP/1.1
