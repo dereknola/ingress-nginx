@@ -37,8 +37,7 @@ COPY --from=builder /etc/nginx /etc/nginx
 
 RUN ln -s /usr/lib64/liblua5.3.so.5.3.0 /usr/local/lib/liblua-5.3.so
 
-RUN zypper addrepo \
-    -p 105 http://download.opensuse.org/distribution/leap/15.6/repo/oss/ download.opensuse.org-oss && \
+RUN zypper addrepo -p 105 http://download.opensuse.org/distribution/leap/15.6/repo/oss/ download.opensuse.org-oss && \
     zypper --gpg-auto-import-keys refresh
 RUN zypper install -y --allow-vendor-change \
     liblmdb-0_9_30 \
@@ -48,7 +47,6 @@ RUN zypper install -y --allow-vendor-change \
     crypto-policies-scripts \
     libgrpc++1 \
     libatomic1 \
-    grpc-devel \
     wget \
     which \
     git \
@@ -60,6 +58,11 @@ RUN zypper install -y --allow-vendor-change \
     tar \
     gzip \
     catatonit
+
+RUN zypper addrepo -p 99 http://download.opensuse.org/tumbleweed/repo/oss/ download.opensuse.org-tumbleweed-oss && \
+    zypper --gpg-auto-import-keys refresh
+RUN zypper install -y --allow-vendor-change \
+    grpc-devel
 
 RUN ldDirs=" \
       /usr/local/lib \
