@@ -37,11 +37,11 @@ COPY --from=builder /etc/nginx /etc/nginx
 
 RUN ln -s /usr/lib64/liblua5.3.so.5.3.0 /usr/local/lib/liblua-5.3.so
 
-RUN zypper addrepo \
-    -p 105 http://download.opensuse.org/distribution/leap/15.6/repo/oss/ download.opensuse.org-oss && \
+RUN zypper addrepo -p 105 http://download.opensuse.org/distribution/leap/15.6/repo/oss/ download.opensuse.org-oss && \
+    zypper addrepo -p 106 http://download.opensuse.org/tumbleweed/repo/oss/ download.opensuse.org-tumbleweed-oss && \
     zypper --gpg-auto-import-keys refresh
 RUN zypper install -y --allow-vendor-change \
-    libabsl2401_0_0 \
+    libabsl_2501_0_0 \
     liblmdb-0_9_30 \
     libxml2-tools \
     libmaxminddb0 \
