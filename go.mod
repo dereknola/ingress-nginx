@@ -1,6 +1,6 @@
 module k8s.io/ingress-nginx
 
-go 1.24.1
+go 1.23.4
 
 require (
 	dario.cat/mergo v1.0.1
