@@ -22,25 +22,21 @@ COPY --chmod=0755 build.sh /
 
 RUN /build.sh
 
-# Use a multi-stage build
-FROM registry.suse.com/bci/bci-base:15.6
 
-ENV PATH=$PATH:/usr/local/luajit/bin:/usr/local/nginx/sbin:/usr/local/nginx/bin
-
-ENV LUA_PATH="/usr/local/share/luajit-2.1.0-beta3/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/lib/lua/?.lua;;"
-ENV LUA_CPATH="/usr/local/lib/lua/?/?.so;/usr/local/lib/lua/?.so;;"
-
-COPY --from=builder /usr/local /usr/local
-COPY --from=builder /usr/lib64/libopentelemetry* /usr/lib64/
-COPY --from=builder /opt /opt
-COPY --from=builder /etc/nginx /etc/nginx
-
-RUN ln -s /usr/lib64/liblua5.3.so.5.3.0 /usr/local/lib/liblua-5.3.so
+FROM registry.suse.com/bci/bci-base:15.6 AS packages
 
 RUN zypper addrepo \
     -p 105 http://download.opensuse.org/distribution/leap/15.6/repo/oss/ download.opensuse.org-oss && \
     zypper --gpg-auto-import-keys refresh
+
+# Install binaries for copying to the final image
 RUN zypper install -y --allow-vendor-change \
+    libcap-progs \
+    nano \
+    catatonit
+
+# Download packages for installing in the final image
+RUN zypper install -y --allow-vendor-change --download-only \
     liblmdb-0_9_30 \
     libxml2-tools \
     libmaxminddb0 \
@@ -60,7 +56,55 @@ RUN zypper install -y --allow-vendor-change \
     tar \
     gzip \
     procps \
-    catatonit
+    catatonit \
+    # The following packages are dependencies 
+    # needed for the smaller bci-micro image
+    liblua5_3 \
+    python3 
+
+# Setup group and user we will run nginx as
+RUN groupadd -rg 101 www-data && \
+    useradd -u 101 -M -d /usr/local/nginx -s /sbin/nologin -G www-data -g www-data www-data
+
+
+FROM registry.suse.com/bci/bci-micro:15.6
+
+ENV PATH=$PATH:/usr/local/luajit/bin:/usr/local/nginx/sbin:/usr/local/nginx/bin
+
+ENV LUA_PATH="/usr/local/share/luajit-2.1.0-beta3/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/lib/lua/?.lua;;"
+ENV LUA_CPATH="/usr/local/lib/lua/?/?.so;/usr/local/lib/lua/?.so;;"
+
+# Copy built artifacts from builder stage
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder /opt /opt
+COPY --from=builder /etc/nginx /etc/nginx
+# All of these are dependencies for the nginx binary
+COPY --from=builder /usr/lib64/libopentelemetry* /usr/lib64/
+COPY --from=builder /usr/lib64/libcrypt* /usr/lib64/
+COPY --from=builder /usr/lib64/libpcre* /usr/lib64/
+COPY --from=builder /usr/lib64/libssl* /usr/lib64/
+COPY --from=builder /usr/lib64/libz* /usr/lib64/
+COPY --from=builder /usr/lib64/libjitter* /usr/lib64/
+
+
+# Copy binaries from packages stage
+COPY --from=packages /usr/bin/find /usr/bin/find
+COPY --from=packages /usr/sbin/setcap /usr/sbin/setcap
+COPY --from=packages /usr/bin/catatonit /usr/bin/catatonit
+COPY --from=packages /usr/bin/nano /usr/bin/nano
+COPY --from=packages /usr/lib64/libmagic* /usr/lib64/
+
+# Get the rpm command and its dependencies
+COPY --from=packages /usr/bin/rpm /usr/bin/rpm
+COPY --from=packages /usr/lib/rpm /usr/lib/rpm
+COPY --from=packages /usr/lib64/librpm* /usr/lib64/
+COPY --from=packages /usr/lib64/libpopt* /usr/lib64/
+
+# Copy and install RPMs from packages stage
+COPY --from=packages /var/cache/zypp/packages /tmp/rpms
+RUN find /tmp/rpms -name "*.rpm" -exec rpm -ivh --nodeps {} \; || true && \
+    find /tmp/rpms -name "*.rpm" -exec rpm -ivh {} \; && \
+    rm -rf /tmp/rpms
 
 RUN ldDirs=" \
       /usr/local/lib \
@@ -71,10 +115,10 @@ RUN ldDirs=" \
   done
 RUN /sbin/ldconfig
 
-RUN ln -s /usr/local/nginx/sbin/nginx /sbin/nginx
-RUN groupadd -rg 101 www-data && \
-    useradd -u 101 -M -d /usr/local/nginx -s /sbin/nologin -G www-data -g www-data www-data
+COPY --from=packages /etc/group /etc/group
+COPY --from=packages /etc/passwd /etc/passwd
 
+RUN ln -s /usr/local/nginx/sbin/nginx /sbin/nginx
 RUN writeDirs=" \
       /var/log/nginx \
       /var/lib/nginx/body \
