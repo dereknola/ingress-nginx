@@ -24,7 +24,7 @@ import (
 	"k8s.io/ingress-nginx/test/e2e/framework"
 )
 
-var _ = framework.DescribeAnnotation("upstream-vhost", func() {
+var _ = framework.DescribeAnnotationB("upstream-vhost", func() {
 	f := framework.NewDefaultFramework("upstreamvhost")
 
 	ginkgo.BeforeEach(func() {

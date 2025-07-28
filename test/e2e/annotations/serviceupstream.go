@@ -29,7 +29,7 @@ import (
 
 const dbgCmd = "/dbg backends all"
 
-var _ = framework.DescribeAnnotation("service-upstream", func() {
+var _ = framework.DescribeAnnotationB("service-upstream", func() {
 	f := framework.NewDefaultFramework("serviceupstream")
 	host := "serviceupstream"
 

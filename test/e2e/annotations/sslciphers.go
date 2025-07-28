@@ -25,7 +25,7 @@ import (
 	"k8s.io/ingress-nginx/test/e2e/framework"
 )
 
-var _ = framework.DescribeAnnotation("ssl-ciphers", func() {
+var _ = framework.DescribeAnnotationB("ssl-ciphers", func() {
 	f := framework.NewDefaultFramework("sslciphers")
 
 	ginkgo.BeforeEach(func() {

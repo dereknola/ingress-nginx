@@ -30,7 +30,7 @@ import (
 	"k8s.io/ingress-nginx/test/e2e/framework"
 )
 
-var _ = framework.DescribeAnnotation("satisfy", func() {
+var _ = framework.DescribeAnnotationB("satisfy", func() {
 	f := framework.NewDefaultFramework("satisfy", framework.WithHTTPBunEnabled())
 
 	ginkgo.BeforeEach(func() {

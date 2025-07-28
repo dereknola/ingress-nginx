@@ -25,7 +25,7 @@ import (
 	"k8s.io/ingress-nginx/test/e2e/framework"
 )
 
-var _ = framework.DescribeAnnotation("server-snippet", func() {
+var _ = framework.DescribeAnnotationB("server-snippet", func() {
 	f := framework.NewDefaultFramework("serversnippet")
 
 	ginkgo.BeforeEach(func() {

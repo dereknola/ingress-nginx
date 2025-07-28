@@ -29,7 +29,7 @@ import (
 
 const proxySSLHost = "proxyssl.foo.com"
 
-var _ = framework.DescribeAnnotation("proxy-ssl-*", func() {
+var _ = framework.DescribeAnnotationB("proxy-ssl-*", func() {
 	f := framework.NewDefaultFramework("proxyssl")
 
 	ginkgo.BeforeEach(func() {

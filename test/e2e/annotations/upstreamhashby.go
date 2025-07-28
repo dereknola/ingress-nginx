@@ -76,7 +76,7 @@ func startIngress(f *framework.Framework, annotations map[string]string) map[str
 	return podMap
 }
 
-var _ = framework.DescribeAnnotation("upstream-hash-by-*", func() {
+var _ = framework.DescribeAnnotationB("upstream-hash-by-*", func() {
 	f := framework.NewDefaultFramework("upstream-hash-by")
 
 	ginkgo.BeforeEach(func() {
