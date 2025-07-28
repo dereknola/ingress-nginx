@@ -225,7 +225,12 @@ func IngressNginxDescribeSerial(text string, body func()) bool {
 
 // DescribeAnnotation wrapper function for ginkgo describe. Adds namespacing.
 func DescribeAnnotation(text string, body func()) bool {
-	return ginkgo.Describe("[Annotations] "+text, body)
+	return ginkgo.Describe("[Annotations_Fast] "+text, body)
+}
+
+// DescribeAnnotationSlow wrapper function for ginkgo describe. Adds namespacing.
+func DescribeAnnotationSlow(text string, body func()) bool {
+	return ginkgo.Describe("[Annotations_Slow] "+text, body)
 }
 
 // DescribeSetting wrapper function for ginkgo describe. Adds namespacing.

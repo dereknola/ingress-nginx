@@ -40,7 +40,7 @@ const (
 	defaultHost        = "foo.com"
 )
 
-var _ = framework.DescribeAnnotation("affinity session-cookie-name", func() {
+var _ = framework.DescribeAnnotationSlow("affinity session-cookie-name", func() {
 	f := framework.NewDefaultFramework("affinity")
 
 	ginkgo.BeforeEach(func() {
