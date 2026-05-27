@@ -371,6 +371,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ${{ github.repository_owner }}
+      BUILDER_OPTS: --driver-opt network=host
     steps:
 
     - name: Check out code
@@ -410,6 +411,17 @@ jobs:
 
     - name: Start local registry
       run: docker run -d --name local-registry -p 5000:5000 registry:2
+
+    - name: Wait for local registry
+      run: |
+        for i in {1..4}; do
+          if curl -fsS http://localhost:5000/v2/ >/dev/null; then
+            exit 0
+          fi
+          sleep 5
+        done
+        echo "Local registry did not become ready" >&2
+        exit 1
 
     - name: Publish base images to local registry
       run: |

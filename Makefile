@@ -240,7 +240,7 @@ run-ingress-controller: ## Run the ingress controller locally using a kubectl pr
 
 .PHONY: builder
 builder:
-	docker buildx create --name $(BUILDER) --bootstrap --use || :
+	docker buildx create --name $(BUILDER) --bootstrap --use $(BUILDER_OPTS) || :
 	docker buildx inspect $(BUILDER)
 
 .PHONY: show-version
@@ -248,6 +248,7 @@ show-version:
 	echo -n $(TAG)
 
 BUILDER ?= ingress-nginx
+BUILDER_OPTS ?=
 PLATFORMS ?= amd64 arm arm64
 BUILDX_PLATFORMS ?= linux/amd64,linux/arm,linux/arm64
 
