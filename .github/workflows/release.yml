@@ -260,7 +260,7 @@ jobs:
         context: ./images/nginx/rootfs
         platforms: linux/amd64
         cache-from: type=gha,scope=nginx-base-amd64-${{ github.ref_name }}
-        cache-to: type=gha,scope=nginx-base-amd64-${{ github.ref_name }},mode=max
+        cache-to: type=gha,scope=nginx-base-amd64-${{ github.ref_name }},mode=min
 
   build-base-image-arm64:
     needs: e2e
@@ -284,7 +284,7 @@ jobs:
         context: ./images/nginx/rootfs
         platforms: linux/arm64
         cache-from: type=gha,scope=nginx-base-arm64-${{ github.ref_name }}
-        cache-to: type=gha,scope=nginx-base-arm64-${{ github.ref_name }},mode=max
+        cache-to: type=gha,scope=nginx-base-arm64-${{ github.ref_name }},mode=min
 
   build-binary-amd64:
     needs: e2e
