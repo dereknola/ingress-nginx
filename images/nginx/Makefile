@@ -17,6 +17,9 @@ PLATFORMS ?= linux/amd64,linux/arm64
 REGISTRY ?= us-central1-docker.pkg.dev/k8s-staging-images/ingress-nginx
 IMAGE ?= $(REGISTRY)/nginx
 TAG ?= $(shell cat TAG)
+CACHE_FROM ?=
+CACHE_TO ?=
+OUTPUT ?=
 
 .PHONY: builder
 builder:
@@ -29,6 +32,9 @@ build: builder
 		--builder $(BUILDER) \
 		--platform $(PLATFORMS) \
 		--progress=plain \
+		$(CACHE_FROM) \
+		$(CACHE_TO) \
+		$(OUTPUT) \
 		rootfs \
 		--tag $(IMAGE):$(TAG)
 
@@ -40,6 +46,8 @@ push: build
 	docker buildx build \
 		--builder $(BUILDER) \
 		--platform $(PLATFORMS) \
+		$(CACHE_FROM) \
+		$(CACHE_TO) \
 		rootfs \
 		--tag $(IMAGE):$(TAG) \
 		--push

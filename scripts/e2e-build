@@ -9,4 +9,8 @@ if ! command -v kind &> /dev/null; then
   ./scripts/e2e-test-install-deps
 fi
 
-TAG=${NGINX_TAG}-e2e make -C images/nginx build BUILDER=default
+if [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
+  build_args+=("BUILDER=default")
+fi
+
+TAG=${NGINX_TAG}-e2e make -C images/nginx build "${build_args[@]}"
