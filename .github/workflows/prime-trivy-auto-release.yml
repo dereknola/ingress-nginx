@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  RELEASE_SERIES_REGEX: ^v1\.15\.[0-9]+-prime[0-9]+$
+  RELEASE_SERIES_REGEX: ^v1\.15\.[0-9]+-dc[0-9]+$
   RELEASE_BRANCH: hardened-nginx-1.15.x
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
             }
 
             const parseTag = (tag) => {
-              const match = tag.match(/^v(\d+)\.(\d+)\.(\d+)-prime(\d+)$/)
+              const match = tag.match(/^v(\d+)\.(\d+)\.(\d+)-dc(\d+)$/)
               if (!match) return null
               return {
                 tag,
@@ -67,7 +67,7 @@ jobs:
             })
 
             const latest = parsed[parsed.length - 1]
-            const nextTag = `v${latest.major}.${latest.minor}.${latest.patch}-prime${latest.prime + 1}`
+            const nextTag = `v${latest.major}.${latest.minor}.${latest.patch}-dc${latest.prime + 1}`
             const baseImage = `${context.repo.owner}/nginx-ingress-controller:${latest.tag}`
 
             core.info(`Latest prime release: ${latest.tag}`)
